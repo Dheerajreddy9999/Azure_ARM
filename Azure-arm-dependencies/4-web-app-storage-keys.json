@@ -1,0 +1,73 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "PlanName": {
+            "type": "string"
+        },
+        "WebAppName": {
+            "type": "string"
+        },
+        "SkuType": {
+            "type": "string",
+            "defaultValue": "S1"
+        },
+        "StorageAccountName": {
+            "type": "string"
+        }
+    },
+    "functions": [],
+    "variables": {},
+    "resources": [
+        {
+           "type": "Microsoft.Web/serverfarms", // app service plan
+           "apiVersion": "2021-02-01",
+           "name": "[parameters('PlanName')]",
+           "location": "[resourceGroup().location]",
+           "sku": {
+             "name": "[parameters('SkuType')]"
+           },
+           "kind": "linux",
+           "properties": {
+             "reserved": true
+           }
+        },
+        {
+            "type":"Microsoft.Web/sites", // app service
+            "apiVersion": "2021-02-01",
+            "name": "[parameters('webAppName')]",
+            "location": "[resourceGroup().location]",
+            "dependsOn": [
+                "[parameters('PlanName')]",
+                "[parameters('StorageAccountName')]"
+            ],
+            "properties": {
+                "httpsOnly": true,
+                "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', parameters('PlanName'))]",
+                "siteConfig": {
+                    "appSettings": [
+                        {
+                            "name": "storageAccessKey",
+                            "value": "[listKeys(parameters('StorageAccountName'), '2022-09-01').keys[0].value]"
+                        }
+                    ]
+                }
+            },
+            "identity": {
+               "type": "SystemAssigned"
+           }
+        },
+
+        {
+        "name": "[parameters('StorageAccountname')]",
+        "type": "Microsoft.Storage/storageAccounts",
+        "apiVersion": "2022-09-01",
+        "location": "[resourceGroup().location]",
+        "kind": "StorageV2",
+        "sku": {
+            "name": "Standard_LRS"
+        }
+     }
+    ],
+    "outputs": {}
+}

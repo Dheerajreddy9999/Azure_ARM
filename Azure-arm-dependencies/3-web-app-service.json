@@ -1,0 +1,50 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "PlanName": {
+            "type": "string"
+        },
+        "WebAppName": {
+            "type": "string"
+        },
+        "SkuType": {
+            "type": "string",
+            "defaultValue": "S1"
+        }
+    },
+    "functions": [],
+    "variables": {},
+    "resources": [
+        {
+           "type": "Microsoft.Web/serverfarms",
+           "apiVersion": "2021-02-01",
+           "name": "[parameters('PlanName')]",
+           "location": "West Central US",
+           "sku": {
+             "name": "[parameters('SkuType')]"
+           },
+           "kind": "linux",
+           "properties": {
+             "reserved": true
+           }
+        },
+        {
+            "type":"Microsoft.Web/sites",
+            "apiVersion": "2021-02-01",
+            "name": "[parameters('webAppName')]",
+            "location": "[resourceGroup().location]",
+            "dependsOn": [
+                "[parameters('PlanName')]"
+            ],
+            "properties": {
+                "httpsOnly": true,
+                "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', parameters('PlanName'))]"
+            },
+            "identity": {
+               "type": "SystemAssigned"
+           }
+        }
+    ],
+    "outputs": {}
+}
