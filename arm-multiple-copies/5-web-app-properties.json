@@ -1,0 +1,82 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "PlanName": {
+            "type": "string",
+            "defaultValue": "mywebappplan"
+        },
+        "WebAppName": {
+            "type": "string",
+            "defaultValue": "mywebapp"
+        },
+        "storageCount": {
+            "type": "int",
+            "defaultValue": 3
+        }
+    },
+    "functions": [],
+    "variables": {
+        "planName": "[concat(parameters('PlanName'),uniqueString(resourceGroup().id))]",
+        "webAppName": "[concat(parameters('WebAppName'),uniqueString(resourceGroup().id))]"
+    },
+    "resources": [
+        {
+        "type": "Microsoft.Storage/storageAccounts",
+        "apiVersion": "2022-09-01",
+        "name": "[concat('storage',uniqueString(resourceGroup().id),copyIndex('copyStorage',2))]",
+        "location": "[resourceGroup().location]",
+        "kind": "StorageV2",
+        "sku": {
+            "name": "Standard_LRS"
+          },
+        "copy": {
+            "name": "copyStorage",
+            "count":"[parameters('storageCount')]"
+        }
+        },
+        {
+           "type": "Microsoft.Web/serverfarms", // app service plan
+           "apiVersion": "2021-02-01",
+           "name": "[variables('planName')]",
+           "location": "[resourceGroup().location]",
+           "sku": {
+             "name": "S1"
+           },
+           "kind": "linux",
+           "properties": {
+             "reserved": true
+           }
+        },
+        {
+            "type":"Microsoft.Web/sites", // app service
+            "apiVersion": "2021-02-01",
+            "name": "[variables('webAppName')]",
+            "location": "[resourceGroup().location]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/serverfarms', variables('planName'))]",
+                "copyStorage"
+            ],
+            "properties": {
+                "httpsOnly": true,
+                "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', parameters('PlanName'))]",
+                "siteConfig": {
+                    "copy": [
+                        {
+                            "name": "appSettings",
+                            "count": "[parameters('storageCount')]",
+                            "input": {
+                                "name": "[concat('storageAccessKey',copyIndex('appSettings'))]",
+                                "value": "[listKeys(resourceId('Microsoft.Storage/storageAccounts', concat('storage', uniqueString(resourceGroup().id), copyIndex('appSettings', 2))), '2019-06-01').keys[0].value]"
+                            }
+                        }
+                    ]
+                }
+            },
+            "identity": {
+               "type": "SystemAssigned"
+           }
+        }
+    ],
+    "outputs": {}
+}

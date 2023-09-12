@@ -1,0 +1,33 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "storageCount": {
+            "type": "array",
+            "defaultValue": [
+                "moon",
+                "sun",
+                "jupiter"
+            ]
+        }
+    },
+    "functions": [],
+    "variables": {},
+    "resources": [
+     {
+        "type": "Microsoft.Storage/storageAccounts",
+        "apiVersion": "2022-09-01",
+        "name": "[concat('s',uniqueString(resourceGroup().id),parameters('storageCount')[copyIndex('copyStorage')])]",
+        "location": "[resourceGroup().location]",
+        "kind": "StorageV2",
+        "sku": {
+            "name": "Standard_LRS"
+        },
+        "copy": {
+            "name": "copyStorage",
+            "count": "[length(parameters('storageCount'))]"
+        }
+     }
+    ],
+    "outputs": {}
+}
