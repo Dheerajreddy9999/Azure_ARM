@@ -1,0 +1,149 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "location": {
+            "value": "eastus"
+        },
+        "osDiskType": {
+            "value": "Premium_LRS"
+        },
+        "addressPrefixes": {
+            "value": [
+                "10.0.0.0/16"
+            ]
+        },
+        "subnets": {
+            "value": [
+                {
+                    "name": "default",
+                    "properties": {
+                        "addressPrefix": "10.0.0.0/20"
+                    }
+                }
+            ]
+        },
+        "virtualNetworkId": {
+            "value": "/subscriptions/d01f29a3-4c6f-413d-bddf-1e1efe751fdb/resourceGroups/DefaultResourceGroup-EUS/providers/Microsoft.Network/virtualNetworks/DefaultResourceGroup-EUS-vnet"
+        },
+        "virtualNetworkName": {
+            "value": "DefaultResourceGroup-EUS-vnet"
+        },
+        "networkSecurityGroups": {
+            "value": [
+                {
+                    "name": "basicNsgDefaultResourceGroup-EUS-vnet-nic01",
+                    "id": "/subscriptions/d01f29a3-4c6f-413d-bddf-1e1efe751fdb/resourceGroups/DefaultResourceGroup-EUS/providers/Microsoft.Network/networkSecurityGroups/basicNsgDefaultResourceGroup-EUS-vnet-nic01",
+                    "rules": []
+                }
+            ]
+        },
+        "networkInterfaceConfigurations": {
+            "value": [
+                {
+                    "name": "DefaultResourceGroup-EUS-vnet-nic01",
+                    "primary": true,
+                    "subnetId": "/subscriptions/d01f29a3-4c6f-413d-bddf-1e1efe751fdb/resourceGroups/DefaultResourceGroup-EUS/providers/Microsoft.Network/virtualNetworks/DefaultResourceGroup-EUS-vnet/subnets/default",
+                    "applicationGatewayBackendAddressPools": [],
+                    "loadBalancerBackendAddressPools": [],
+                    "applicationSecurityGroups": [],
+                    "loadBalancerInboundNatPools": [],
+                    "enableAcceleratedNetworking": false,
+                    "nsgName": "basicNsgDefaultResourceGroup-EUS-vnet-nic01",
+                    "nsgId": "/subscriptions/d01f29a3-4c6f-413d-bddf-1e1efe751fdb/resourceGroups/DefaultResourceGroup-EUS/providers/Microsoft.Network/networkSecurityGroups/basicNsgDefaultResourceGroup-EUS-vnet-nic01",
+                    "pipName": "publicIp-DefaultResourceGroup-EUS-vnet-nic0"
+                }
+            ]
+        },
+        "vmName": {
+            "value": "vmscaleset-demo"
+        },
+        "virtualMachineScaleSetName": {
+            "value": "vmscaleset-demo"
+        },
+        "instanceCount": {
+            "value": "2"
+        },
+        "instanceSize": {
+            "value": "Standard_B2s"
+        },
+        "scaleInPolicy": {
+            "value": {
+                "rules": [
+                    "Default"
+                ],
+                "forceDeletion": false
+            }
+        },
+        "upgradePolicy": {
+            "value": "Manual"
+        },
+        "adminUsername": {
+            "value": "azureuser"
+        },
+        "securityType": {
+            "value": "TrustedLaunch"
+        },
+        "secureBoot": {
+            "value": true
+        },
+        "vTPM": {
+            "value": true
+        },
+        "autoScaleDefault": {
+            "value": "2"
+        },
+        "autoScaleMin": {
+            "value": "2"
+        },
+        "autoScaleMax": {
+            "value": "10"
+        },
+        "scaleOutCPUPercentageThreshold": {
+            "value": "75"
+        },
+        "durationTimeWindow": {
+            "value": "10"
+        },
+        "scaleOutInterval": {
+            "value": "1"
+        },
+        "scaleInCPUPercentageThreshold": {
+            "value": "25"
+        },
+        "scaleInInterval": {
+            "value": "1"
+        },
+        "predictiveAutoscaleMode": {
+            "value": "Disabled"
+        },
+        "healthExtensionProtocol": {
+            "value": "http"
+        },
+        "healthExtensionPort": {
+            "value": 80
+        },
+        "healthExtensionRequestPath": {
+            "value": "/"
+        },
+        "autoRepairsPolicyEnabled": {
+            "value": true
+        },
+        "gracePeriod": {
+            "value": "PT10M"
+        },
+        "platformFaultDomainCount": {
+            "value": "1"
+        },
+        "zone": {
+            "value": [
+                "1",
+                "2",
+                "3"
+            ]
+        },
+        "zoneBalance": {
+            "value": "false"
+        }
+    }
+}
